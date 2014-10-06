@@ -44,6 +44,52 @@ Example.prototype.emits = emits; // require('emits');
 var example = new Example();
 ```
 
+Now that we've setup our example code we can finally demonstrate the beauty of
+this functionality. To create a function that emits `data` we can simply do:
+
+```js
+var data = example.emits('data');
+```
+
+Every time you invoke the `data()` function it will emit the `data` event with
+all the arguments you supplied. If you want "curry" some extra arguments you add
+those after the event name:
+
+```js
+var data = example.emits('data', 'foo');
+```
+
+Now when you call `data()` the `data` event will receive `foo` as first argument
+and the rest of the arguments would be the once that you've supplied the
+`data()` function.
+
+If you supply a function as last argument we assume that this is an argument
+parser so you can modify arguments, prevent the emit of the event or just clear
+all supplied arguments (except for the once that are curried in).
+
+```js
+var data = example.emits('data', function parser(arg) {
+  return 'bar';
+})
+```
+
+In the example above we've have transformed the incoming argument to `bar`. So
+when call `data()` it will emit a `data` event with `bar` as only argument.
+
+To prevent the emitting from happening you need to return the `parser` function
+that you supplied. This is the only reliable way to determine if we need to
+prevent an emit:
+
+```js
+var data = example.emits('data', function parser() {
+  return parser;
+});
+```
+
+If you return `undefined` from parser we assume that no modification have been
+made to the arguments and we should emit our received arguments. If `null` is
+returned function we assume that all received arguments should be removed.
+
 ### Patterns
 
 One our most common patterns for this module is to proxy events from one
