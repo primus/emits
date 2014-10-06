@@ -60,7 +60,7 @@ var data = example.emits('data', 'foo');
 ```
 
 Now when you call `data()` the `data` event will receive `foo` as first argument
-and the rest of the arguments would be the ones that you've supplied the
+and the rest of the arguments would be the ones that you've supplied to the
 `data()` function.
 
 If you supply a function as last argument we assume that this is an argument
