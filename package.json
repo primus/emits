@@ -1,6 +1,6 @@
 {
   "name": "emits",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "returns a function which will emit and parse the specified event",
   "main": "index.js",
   "scripts": {
