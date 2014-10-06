@@ -1,18 +1,19 @@
 'use strict';
 
-var slice = Array.prototype.slice;
-
 /**
- * Return a function that emits the
+ * Return a function that emits the given event.
  *
+ * @param {String} event Name of the event we wish to emit.
  * @returns {Function} The function that emits all the things.
  * @api public
  */
-module.exports = function emits() {
-  var args = slice.call(arguments, 0)
-    , event = args[0]
-    , self = this
+module.exports = function emits(event) {
+  var self = this
     , parser;
+
+  for (var i = 0, l = arguments.length, args = new Array(l); i < l; i++) {
+    args[i] = arguments[i];
+  }
 
   //
   // Assume that if the last given argument is a function, it would be
