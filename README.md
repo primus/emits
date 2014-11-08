@@ -1,8 +1,6 @@
 # emits
 
-[![Build Status](https://travis-ci.org/primus/emits.svg?branch=master)](https://travis-ci.org/primus/emits)
-[![NPM version](https://badge.fury.io/js/emits.svg)](http://badge.fury.io/js/emits)
-[![Coverage Status](https://img.shields.io/coveralls/primus/emits.svg)](https://coveralls.io/r/primus/emits?branch=master)
+[![Version npm](http://img.shields.io/npm/v/emits.svg?style=flat-square)](http://browsenpm.org/package/emits)[![Build Status](http://img.shields.io/travis/primus/emits/master.svg?style=flat-square)](https://travis-ci.org/primus/emits)[![Dependencies](https://img.shields.io/david/primus/emits.svg?style=flat-square)](https://david-dm.org/primus/emits)[![Coverage Status](http://img.shields.io/coveralls/primus/emits/master.svg?style=flat-square)](https://coveralls.io/r/primus/emits?branch=master)[![IRC channel](http://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=primus)
 
 ## Installation
 
