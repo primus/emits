@@ -47,8 +47,13 @@ describe('emits', function () {
     assume(fn('bar')).is.true();
   });
 
-  it('returns false if no listeners are present', function () {
+  it('returns false when there are no listeners', function () {
     var fn = example.emits('data');
+    assume(fn()).is.false();
+  });
+
+  it('calls the parser function even when there are no listeners', function (next) {
+    var fn = example.emits('data', next);
     assume(fn()).is.false();
   });
 
@@ -79,7 +84,7 @@ describe('emits', function () {
     assume(fn('foo')).is.true();
   });
 
-  it('returns all recieved arguments when undefined is returned', function (next) {
+  it('returns all received arguments when undefined is returned', function (next) {
     var fn = example.emits('data', 'sup', function () {
 
     });

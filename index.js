@@ -24,8 +24,6 @@ module.exports = function emits(event) {
   }
 
   return function emit() {
-    if (!self.listeners(event).length) return false;
-
     for (var i = 0, l = arguments.length, arg = new Array(l); i < l; i++) {
       arg[i] = arguments[i];
     }
@@ -38,6 +36,8 @@ module.exports = function emits(event) {
       else if (returned !== undefined) arg = returned;
     }
 
-    return self.emit.apply(self, args.concat(arg));
+    return self.listeners(event).length
+      ? self.emit.apply(self, args.concat(arg))
+      : false;
   };
 };
