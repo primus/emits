@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- * Return a function that emits the given event.
+ * Returns a function that when invoked executes all the listeners of the
+ * given event with the given arguments.
  *
- * @param {String} event Name of the event we wish to emit.
  * @returns {Function} The function that emits all the things.
  * @api public
  */
-module.exports = function emits(event) {
+module.exports = function emits() {
   var self = this
     , parser;
 
@@ -36,8 +36,6 @@ module.exports = function emits(event) {
       else if (returned !== undefined) arg = returned;
     }
 
-    return self.listeners(event).length
-      ? self.emit.apply(self, args.concat(arg))
-      : false;
+    return self.emit.apply(self, args.concat(arg));
   };
 };
