@@ -23,6 +23,13 @@ module.exports = function emits() {
     parser = args.pop();
   }
 
+  /**
+   * The actual function does the emitting of the given event. It will return
+   * a boolean indicating if the event was emitted.
+   *
+   * @returns {Boolean}
+   * @api public
+   */
   return function emitter() {
     for (var i = 0, l = arguments.length, arg = new Array(l); i < l; i++) {
       arg[i] = arguments[i];
