@@ -88,6 +88,25 @@ If you return `undefined` from the parser we assume that no modification have
 been made to the arguments and we should emit our received arguments. If `null`
 is returned we assume that all received arguments should be removed.
 
+### Async
+
+All the example above have been about synchronous execution of the parser and
+emitting of events. We also support async execution of the events. We assume
+that a parser should be executed asynchronously if the parser function has
+**more** arguments than it receives. We automatically append a `callback`
+function to the arguments which should be called once all the parsing is
+completed.
+
+```js
+var data = example.emits('data', function parser(arg, fn) {
+  setTimeout(function () {
+    fn(undefined, 'bar');
+  });
+});
+```
+The example above will emit `bar` as data. If you supply the callback function
+an `error` argument we will automatically this as `error` event.
+
 ### Patterns
 
 In Primus the most common pattern for this module is to proxy events from one
