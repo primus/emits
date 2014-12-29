@@ -53,7 +53,10 @@ describe('emits', function () {
   });
 
   it('calls the parser function even when there are no listeners', function (next) {
-    var fn = example.emits('data', next);
+    var fn = example.emits('data', function () {
+      next();
+    });
+
     assume(fn()).is.false();
   });
 
@@ -109,6 +112,42 @@ describe('emits', function () {
       assume(sup).equals('sup');
       assume(foo).equals('bar');
 
+      next();
+    });
+
+    assume(fn('foo')).is.true();
+  });
+
+  it('supports async execution based on the amount of args', function (next) {
+    var fn = example.emits('data', 'sup', function (data, fn) {
+      setTimeout(function () {
+        fn(undefined, 'bar');
+      }, 100);
+    });
+
+    example.on('data', function (sup, foo, bar) {
+      assume(sup).equals('sup');
+      assume(foo).equals('bar');
+
+      next();
+    });
+
+    assume(fn('foo')).is.true();
+  });
+
+  it('emits an error when async execution fails with an error', function (next) {
+    var fn = example.emits('data', 'sup', function (data, fn) {
+      setTimeout(function () {
+        fn(new Error('lol failure'), 'bar');
+      }, 100);
+    });
+
+    example.on('data', function (sup, foo, bar) {
+      throw new Error('I should never be called');
+    });
+
+    example.on('error', function (err) {
+      assume(err.message).equals('lol failure');
       next();
     });
 
