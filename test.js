@@ -52,29 +52,37 @@ describe('emits', function () {
     assume(fn()).is.false();
   });
 
+  it('returns true when there are listeners', function () {
+    var fn = example.emits('data');
+    example.on('data', function () {});
+
+    assume(fn()).is.true();
+  });
+
   it('calls the parser function even when there are no listeners', function (next) {
     var fn = example.emits('data', function () {
       next();
     });
 
-    assume(fn()).is.false();
+    assume(fn()).is.true();
   });
 
-  it('returns false if the parser function is returned', function () {
-    var fn = example.emits('data', function parser() {
-      return parser;
+  it('does not emit the event if no data argument is supplied', function (next) {
+    var fn = example.emits('data', function parser(done) {
+      done();
+      next();
     });
 
     example.on('data', function () {
       throw new Error('I should never be called');
     });
 
-    assume(fn()).is.false();
+    assume(fn()).is.true();
   });
 
   it('returns only the supplied arguments when null is returned', function (next) {
-    var fn = example.emits('data', 'bar', function () {
-      return null;
+    var fn = example.emits('data', 'bar', function (done) {
+      done(undefined, null);
     });
 
     example.on('data', function (bar, foo) {
@@ -88,14 +96,15 @@ describe('emits', function () {
   });
 
   it('returns all received arguments when undefined is returned', function (next) {
-    var fn = example.emits('data', 'sup', function () {
-
+    var fn = example.emits('data', 'sup', function (foo, bar, done) {
+      done(undefined, undefined);
     });
 
     example.on('data', function (sup, foo, bar) {
       assume('sup').equals(sup);
       assume(bar).equals('bar');
       assume(foo).equals('foo');
+      assume(arguments).has.length(3);
 
       next();
     });
@@ -104,8 +113,8 @@ describe('emits', function () {
   });
 
   it('can modify the data', function (next) {
-    var fn = example.emits('data', 'sup', function () {
-      return 'bar';
+    var fn = example.emits('data', 'sup', function (data, done) {
+      done(undefined, 'bar');
     });
 
     example.on('data', function (sup, foo) {

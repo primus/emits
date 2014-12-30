@@ -50,14 +50,15 @@ module.exports = function emits() {
      * @param {Mixed} returned
      * @api private
      */
-    arg[length] = function next(err, returned) {
+    arg[length - 1] = function next(err, returned) {
       if (err) return self.emit('error', err);
 
-      if (arguments.length === 1) return false;
+      if (arguments.length < 2) return false;
       if (returned === null) arg = [];
       else if (returned !== undefined) arg = returned;
+      else arg = arg.slice(0, length - 1);
 
-      self.emit.apply(self, args.concat(arg.slice(0, length - 1)));
+      self.emit.apply(self, args.concat(arg));
     };
 
     parser.apply(self, arg);
