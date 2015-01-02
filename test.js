@@ -60,7 +60,8 @@ describe('emits', function () {
   });
 
   it('calls the parser function even when there are no listeners', function (next) {
-    var fn = example.emits('data', function () {
+    var fn = example.emits('data', function (done) {
+      done();
       next();
     });
 
@@ -68,7 +69,7 @@ describe('emits', function () {
   });
 
   it('does not emit the event if no data argument is supplied', function (next) {
-    var fn = example.emits('data', function parser(done) {
+    var fn = example.emits('data', function (done) {
       done();
       next();
     });
@@ -96,15 +97,15 @@ describe('emits', function () {
   });
 
   it('returns all received arguments when undefined is returned', function (next) {
-    var fn = example.emits('data', 'sup', function (foo, bar, done) {
+    var fn = example.emits('data', 'sup', function (done) {
       done(undefined, undefined);
     });
 
     example.on('data', function (sup, foo, bar) {
-      assume('sup').equals(sup);
-      assume(bar).equals('bar');
-      assume(foo).equals('foo');
       assume(arguments).has.length(3);
+      assume(sup).equals('sup');
+      assume(foo).equals('foo');
+      assume(bar).equals('bar');
 
       next();
     });
@@ -113,7 +114,7 @@ describe('emits', function () {
   });
 
   it('can modify the data', function (next) {
-    var fn = example.emits('data', 'sup', function (data, done) {
+    var fn = example.emits('data', 'sup', function (done) {
       done(undefined, 'bar');
     });
 
@@ -127,14 +128,15 @@ describe('emits', function () {
     assume(fn('foo')).is.true();
   });
 
-  it('supports async execution based on the amount of args', function (next) {
-    var fn = example.emits('data', 'sup', function (data, fn) {
+  it('supports async execution', function (next) {
+    var fn = example.emits('data', 'sup', function (done) {
       setTimeout(function () {
-        fn(undefined, 'bar');
+        done(undefined, 'bar');
       }, 100);
     });
 
     example.on('data', function (sup, foo, bar) {
+      assume(bar).equals(undefined);
       assume(sup).equals('sup');
       assume(foo).equals('bar');
 
@@ -145,13 +147,13 @@ describe('emits', function () {
   });
 
   it('emits an error when async execution fails with an error', function (next) {
-    var fn = example.emits('data', 'sup', function (data, fn) {
+    var fn = example.emits('data', 'sup', function (done) {
       setTimeout(function () {
-        fn(new Error('lol failure'), 'bar');
+        done(new Error('lol failure'), 'bar');
       }, 100);
     });
 
-    example.on('data', function (sup, foo, bar) {
+    example.on('data', function () {
       throw new Error('I should never be called');
     });
 
