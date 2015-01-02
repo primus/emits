@@ -9,7 +9,6 @@
  */
 module.exports = function emits() {
   var self = this
-    , length
     , parser;
 
   for (var i = 0, l = arguments.length, args = new Array(l); i < l; i++) {
@@ -17,8 +16,7 @@ module.exports = function emits() {
   }
 
   //
-  // Assume that if the last given argument is a function, it would be
-  // a parser.
+  // If the last argument is a function, assume that it's a parser.
   //
   if ('function' !== typeof args[args.length - 1]) return function emitter() {
     for (var i = 0, l = arguments.length, arg = new Array(l); i < l; i++) {
@@ -29,18 +27,17 @@ module.exports = function emits() {
   };
 
   parser = args.pop();
-  length = parser.length;
 
   /**
-   * The actual function does the emitting of the given event. It will return
-   * a boolean indicating if the event was emitted.
+   * The actual function that emits the given event. It returns a boolean
+   * indicating if the event was emitted.
    *
    * @returns {Boolean}
    * @api public
    */
   return function emitter() {
-    for (var i = 0, arg = new Array(length); i < length; i++) {
-      arg[i] = arguments[i];
+    for (var i = 0, l = arguments.length, arg = new Array(l + 1); i < l; i++) {
+      arg[i + 1] = arguments[i];
     }
 
     /**
@@ -50,13 +47,14 @@ module.exports = function emits() {
      * @param {Mixed} returned
      * @api private
      */
-    arg[length - 1] = function next(err, returned) {
+    arg[0] = function next(err, returned) {
       if (err) return self.emit('error', err);
 
       if (arguments.length < 2) return false;
-      if (returned === null) arg = [];
-      else if (returned !== undefined) arg = returned;
-      else arg = arg.slice(0, length - 1);
+
+      arg = returned === undefined
+        ? arg.slice(1) : returned === null
+          ? [] : returned;
 
       self.emit.apply(self, args.concat(arg));
     };
