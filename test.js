@@ -68,6 +68,18 @@ describe('emits', function () {
     assume(fn()).is.true();
   });
 
+  it('can prevent the event from being fired', function (next) {
+    var fn = example.emits('data', function () {
+      next();
+    });
+
+    example.on('data', function () {
+      throw new Error('I should never be called');
+    });
+
+    assume(fn()).is.true();
+  });
+
   it('returns only the supplied arguments when null is returned', function (next) {
     var fn = example.emits('data', 'bar', function (done) {
       done(undefined, null);
@@ -85,7 +97,7 @@ describe('emits', function () {
 
   it('returns all received arguments when undefined is returned', function (next) {
     var fn = example.emits('data', 'sup', function (done) {
-      done(undefined, undefined);
+      done();
     });
 
     example.on('data', function (sup, foo, bar) {
