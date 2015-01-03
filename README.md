@@ -61,51 +61,38 @@ Now when you call `data()` the `data` event will receive `foo` as first argument
 and the rest of the arguments would be the ones that you've supplied to the
 `data()` function.
 
-If you supply a function as last argument we assume that this is an argument
-parser. This allows you to modify arguments, prevent the emit of the event or
-just clear all supplied arguments (except for the ones that are curried in).
+If you supply a function as last argument we assume that this is an async
+argument parser. This allows you to modify arguments, prevent the emit of the
+event or just clear all supplied arguments (except for the ones that are curried
+in). The first argument of the function is always the callback function all
+other arguments after that are the arguments that are emitted. The callback
+function follows an error first callback pattern. So to modify the data you need
+to supply the change as second argument:
 
 ```js
-var data = example.emits('data', function parser(arg) {
-  return 'bar';
-})
+var data = example.emits('data', function parser(next, arg) {
+  next(undefined, 'bar');
+});
 ```
 
 In the example above we've transformed the incoming argument to `bar`. So when
-you call `data()` it will emit a `data` event with `bar` as the only argument.
-
-To prevent the emitting from happening you need to return the `parser` function
-that you supplied. This is the only reliable way to determine if we need to
-prevent an emit:
+you call `data()` it will emit a `data` event with `bar` as the second argument.
+As we follow an error first callback pattern you can supply any parsing error as
+first argument and we will automatically emit an `error` event instead.
 
 ```js
-var data = example.emits('data', function parser() {
-  return parser;
+var data = example.emits('data', function parser(next, arg) {
+  try { arg = JSON.parse(arg); }
+  catch (e) { return next(e); }
+
+  next(undefined, arg);
 });
 ```
 
-If you return `undefined` from the parser we assume that no modification have
-been made to the arguments and we should emit our received arguments. If `null`
-is returned we assume that all received arguments should be removed.
-
-### Async
-
-All the example above have been about synchronous execution of the parser and
-emitting of events. We also support async execution of the events. We assume
-that a parser should be executed asynchronously if the parser function has
-**more** arguments than it receives. We automatically append a `callback`
-function to the arguments which should be called once all the parsing is
-completed.
-
-```js
-var data = example.emits('data', function parser(arg, fn) {
-  setTimeout(function () {
-    fn(undefined, 'bar');
-  });
-});
-```
-The example above will emit `bar` as data. If you supply the callback function
-an `error` argument we will automatically this as `error` event.
+If you callback with `undefined` as argument or any arguments from the parser we
+assume that no modification have been made to the arguments and we should emit
+our received arguments. If `null` is returned we assume that all received
+arguments should be removed.
 
 ### Patterns
 
