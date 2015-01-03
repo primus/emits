@@ -1,6 +1,12 @@
 # emits
 
-[![Version npm](http://img.shields.io/npm/v/emits.svg?style=flat-square)](http://browsenpm.org/package/emits)[![Build Status](http://img.shields.io/travis/primus/emits/master.svg?style=flat-square)](https://travis-ci.org/primus/emits)[![Dependencies](https://img.shields.io/david/primus/emits.svg?style=flat-square)](https://david-dm.org/primus/emits)[![Coverage Status](http://img.shields.io/coveralls/primus/emits/master.svg?style=flat-square)](https://coveralls.io/r/primus/emits?branch=master)[![IRC channel](http://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square)](http://webchat.freenode.net/?channels=primus)
+[![Version npm][version]](http://browsenpm.org/package/emits)[![Build Status][build]](https://travis-ci.org/primus/emits)[![Dependencies][david]](https://david-dm.org/primus/emits)[![Coverage Status][cover]](https://coveralls.io/r/primus/emits?branch=master)[![IRC channel][irc]](https://webchat.freenode.net/?channels=primus)
+
+[version]: https://img.shields.io/npm/v/emits.svg?style=flat-square
+[build]: https://img.shields.io/travis/primus/emits/master.svg?style=flat-square
+[david]: https://img.shields.io/david/primus/emits.svg?style=flat-square
+[cover]: https://img.shields.io/coveralls/primus/emits/master.svg?style=flat-square
+[irc]: https://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square
 
 ## Installation
 
@@ -15,8 +21,7 @@ npm install --save emits
 
 In all examples we assume that you've assigned the `emits` function to the
 prototype of your class. This class should inherit from an `EventEmitter` class
-which uses the `emit` function to emit events and the `listeners` method to list
-the listeners of a given event. For example:
+which uses the `emit` function to emit events. For example:
 
 ```js
 'use strict';
@@ -61,24 +66,14 @@ Now when you call `data()` the `data` event will receive `foo` as first argument
 and the rest of the arguments would be the ones that you've supplied to the
 `data()` function.
 
-If you supply a function as last argument we assume that this is an async
-argument parser. This allows you to modify arguments, prevent the emit of the
-event or just clear all supplied arguments (except for the ones that are curried
-in). The first argument of the function is always the callback function all
-other arguments after that are the arguments that are emitted. The callback
-function follows an error first callback pattern. So to modify the data you need
-to supply the change as second argument:
-
-```js
-var data = example.emits('data', function parser(next, arg) {
-  next(undefined, 'bar');
-});
-```
-
-In the example above we've transformed the incoming argument to `bar`. So when
-you call `data()` it will emit a `data` event with `bar` as the second argument.
-As we follow an error first callback pattern you can supply any parsing error as
-first argument and we will automatically emit an `error` event instead.
+If you supply a function as the last argument we assume that this is an async
+argument parser. This allows you to modify the arguments, prevent the event from
+being fired or just clear all supplied arguments (except for the ones that are
+curried in). The first argument of the function is always the callback function,
+all other arguments after that are the ones emitted with the event. The callback
+function follows the usual error first pattern. When the callback is invoked
+with an error it will emit an `error` event on the `EventEmitter` instance. In
+our case the `example` instance:
 
 ```js
 var data = example.emits('data', function parser(next, arg) {
@@ -89,10 +84,25 @@ var data = example.emits('data', function parser(next, arg) {
 });
 ```
 
-If you callback with `undefined` as argument or any arguments from the parser we
-assume that no modification have been made to the arguments and we should emit
-our received arguments. If `null` is returned we assume that all received
-arguments should be removed.
+To modify the data you need to supply the change as second argument:
+
+```js
+var data = example.emits('data', function parser(next, arg) {
+  next(undefined, 'bar');
+});
+```
+
+In the example above we've transformed the incoming argument to `bar`. So when
+you call `data()` it will emit a `data` event with `bar` as the second argument.
+If you call the callback with `undefined` as second argument we assume that no
+modifications have been made and we emit all received arguments. If you want to
+clear all received arguments, call the callback with `null`:
+
+```js
+var data = example.emits('data', function parser(next, arg) {
+  next(undefined, null);
+});
+```
 
 ### Patterns
 
@@ -109,8 +119,8 @@ we can parse the argument as following:
 
 ```js
 var ws = new WebSocket('wss://example.org/path');
-ws.onmessage = example.emits('data', function parser(evt) {
-  return evt.data;
+ws.onmessage = example.emits('data', function parser(next, evt) {
+  next(undefined, evt.data);
 });
 ```
 
@@ -120,23 +130,21 @@ from being emitted.
 
 ```js
 var ws = new WebSocket('wss://example.org/path');
-ws.onmessage = example.emits('data', function parser(evt) {
+ws.onmessage = example.emits('data', function parser(next, evt) {
   var data;
 
   try { data = JSON.parse(evt.data); }
-  catch (e) { return parser; }
+  catch (e) { return next(e); }
 
-  if ('object' !== typeof data || Array.isArray(data)) {
-    return parser;
-  }
+  if ('object' !== typeof data || Array.isArray(data)) return;
 
-  return data;
+  next(undefined, data);
 });
 ```
 
-By returning a reference to the parser we tell the emit function that we
-don't want to emit the event. So the `data` event will only be fired if
-we've received a valid JSON document from the server and it's an object.
+By not calling the callback we make sure that the event is not emitted. So the
+`data` event will only be fired if we've received a valid JSON document from the
+server and it's an object.
 
 ## License
 
