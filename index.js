@@ -43,14 +43,12 @@ module.exports = function emits() {
     /**
      * Async completion method for the parser.
      *
-     * @param {Error} err
-     * @param {Mixed} returned
+     * @param {Error} err Optional error when parsing failed.
+     * @param {Mixed} returned Emit instructions.
      * @api private
      */
     arg[0] = function next(err, returned) {
       if (err) return self.emit('error', err);
-
-      if (arguments.length < 2) return false;
 
       arg = returned === undefined
         ? arg.slice(1) : returned === null

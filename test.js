@@ -68,19 +68,6 @@ describe('emits', function () {
     assume(fn()).is.true();
   });
 
-  it('does not emit the event if no data argument is supplied', function (next) {
-    var fn = example.emits('data', function (done) {
-      done();
-      next();
-    });
-
-    example.on('data', function () {
-      throw new Error('I should never be called');
-    });
-
-    assume(fn()).is.true();
-  });
-
   it('returns only the supplied arguments when null is returned', function (next) {
     var fn = example.emits('data', 'bar', function (done) {
       done(undefined, null);
