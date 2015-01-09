@@ -18,7 +18,7 @@ module.exports = function emits() {
   //
   // If the last argument is a function, assume that it's a parser.
   //
-  if ('function' !== typeof args[args.length - 1]) return function emitter() {
+  if ('function' !== typeof args[l - 1]) return function emitter() {
     for (var i = 0, l = arguments.length, arg = new Array(l); i < l; i++) {
       arg[i] = arguments[i];
     }
