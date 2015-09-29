@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha test.js",
-    "coverage": "istanbul cover node_modules/.bin/_mocha -- test.js",
-    "test-travis": "istanbul cover node_modules/.bin/_mocha --report lcovonly -- test.js"
+    "coverage": "istanbul cover _mocha -- test.js",
+    "test-travis": "istanbul cover _mocha --report lcovonly -- test.js"
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/primus/emits",
   "devDependencies": {
-    "assume": "1.1.x",
+    "assume": "1.3.x",
     "istanbul": "0.3.x",
-    "mocha": "2.1.x",
-    "pre-commit": "1.0.x"
+    "mocha": "2.3.x",
+    "pre-commit": "1.1.x"
   }
 }
