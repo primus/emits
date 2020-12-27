@@ -1,9 +1,9 @@
 # emits
 
-[![Version npm][version]](http://browsenpm.org/package/emits)[![Build Status][build]](https://travis-ci.org/primus/emits)[![Dependencies][david]](https://david-dm.org/primus/emits)[![Coverage Status][cover]](https://coveralls.io/r/primus/emits?branch=master)[![IRC channel][irc]](https://webchat.freenode.net/?channels=primus)
+[![Version npm][version]](http://browsenpm.org/package/emits)[![Build Status][build]](https://github.com/primus/emits/actions?query=workflow%3ACI+branch%3Amaster)[![Dependencies][david]](https://david-dm.org/primus/emits)[![Coverage Status][cover]](https://coveralls.io/r/primus/emits?branch=master)[![IRC channel][irc]](https://webchat.freenode.net/?channels=primus)
 
 [version]: https://img.shields.io/npm/v/emits.svg?style=flat-square
-[build]: https://img.shields.io/travis/primus/emits/master.svg?style=flat-square
+[build]: https://img.shields.io/github/workflow/status/primus/emits/CI/master?label=CI&style=flat-square
 [david]: https://img.shields.io/david/primus/emits.svg?style=flat-square
 [cover]: https://img.shields.io/coveralls/primus/emits/master.svg?style=flat-square
 [irc]: https://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square
