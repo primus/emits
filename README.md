@@ -1,9 +1,9 @@
 # emits
 
-[![Version npm][version]](https://www.npmjs.com/package/emits)[![Build Status][build]](https://github.com/primus/emits/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status][cover]](https://coveralls.io/r/primus/emits?branch=master)
+[![Version npm][version]](https://www.npmjs.com/package/emits)[![CI][ci]](https://github.com/primus/emits/actions?query=workflow%3ACI+branch%3Amaster)[![Coverage Status][cover]](https://coveralls.io/r/primus/emits?branch=master)
 
 [version]: https://img.shields.io/npm/v/emits.svg?style=flat-square
-[build]: https://img.shields.io/github/workflow/status/primus/emits/CI/master?label=CI&style=flat-square
+[ci]: https://img.shields.io/github/actions/workflow/status/primus/emits/ci.yml?branch=master&label=CI&style=flat-square
 [cover]: https://img.shields.io/coveralls/primus/emits/master.svg?style=flat-square
 [irc]: https://img.shields.io/badge/IRC-irc.freenode.net%23primus-00a8ff.svg?style=flat-square
 
